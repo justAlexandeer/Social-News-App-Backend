@@ -1,29 +1,59 @@
 package com.github.justalexandeer.SocialNewsAppBackend.service;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.AppUser;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.Role;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.RoleRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser appUser = userRepository.findByUsername(username);
+        if (appUser == null) {
+            throw new UsernameNotFoundException("User not found in the database");
+        }
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        appUser.getRoles().forEach(role-> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+        return new User(appUser.getUsername(), appUser.getPassword(), authorities);
+    }
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public AppUser saveUser(AppUser appUser) {
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         return userRepository.save(appUser);
+    }
+
+    @Override
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
     }
 
     @Override
