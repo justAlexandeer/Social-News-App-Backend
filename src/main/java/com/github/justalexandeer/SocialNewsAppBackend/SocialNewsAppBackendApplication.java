@@ -22,11 +22,11 @@ public class SocialNewsAppBackendApplication {
 	@Bean
 	CommandLineRunner run(UserService userService) {
 		return args -> {
-			userService.saveRole(new Role(null, "ROLE_USER"));
-			userService.saveRole(new Role(null, "ROLE_ADMIN"));
-
-			userService.saveUser(new AppUser(null, "Jonh Piter", "john", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Sergey Victor", "sergey", "4321", new ArrayList<>()));
+//			userService.saveRole(new Role(null, "ROLE_USER"));
+//			userService.saveRole(new Role(null, "ROLE_ADMIN"));
+//
+//			userService.saveUser(new AppUser(null, "Jonh Piter", "john", "1234", new ArrayList<>()));
+//			userService.saveUser(new AppUser(null, "Sergey Victor", "sergey", "4321", new ArrayList<>()));
 
 		};
 	}
