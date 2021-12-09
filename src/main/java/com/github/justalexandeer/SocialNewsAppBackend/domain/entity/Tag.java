@@ -1,23 +1,23 @@
-package com.github.justalexandeer.SocialNewsAppBackend.domain;
+package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
 
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "tag")
+public class Tag {
     @Id
     @GeneratedValue(strategy = AUTO)
     private Long id;
     @Column(name = "name")
     private String name;
 
-    public Role() {
+    public Tag() {
 
     }
 
-    public Role(Long id, String name) {
+    public Tag(Long id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -1,7 +1,11 @@
 package com.github.justalexandeer.SocialNewsAppBackend;
 
-import com.github.justalexandeer.SocialNewsAppBackend.domain.AppUser;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.Role;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
+import com.github.justalexandeer.SocialNewsAppBackend.service.AnswerService;
+import com.github.justalexandeer.SocialNewsAppBackend.service.CommentService;
+import com.github.justalexandeer.SocialNewsAppBackend.service.PostService;
 import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,14 +24,33 @@ public class SocialNewsAppBackendApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(UserService userService) {
+	CommandLineRunner run(
+			UserService userService,
+			PostService postService,
+			CommentService commentService,
+			AnswerService answerService
+	) {
 		return args -> {
-//			userService.saveRole(new Role(null, "ROLE_USER"));
-//			userService.saveRole(new Role(null, "ROLE_ADMIN"));
-//
-//			userService.saveUser(new AppUser(null, "Jonh Piter", "john", "1234", new ArrayList<>()));
-//			userService.saveUser(new AppUser(null, "Sergey Victor", "sergey", "4321", new ArrayList<>()));
+			userService.saveRole(new Role(null, "ROLE_USER"));
+			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 
+			final AppUser appUser = new AppUser(null, "Jonh Piter", "john", "1234", new ArrayList<>());
+			userService.saveUser(appUser);
+			userService.saveUser(new AppUser(null, "Sergey Victor", "sergey", "4321", new ArrayList<>()));
+
+			userService.addRoleToUser("john", "ROLE_USER");
+
+			Post post = new Post(
+					1L,
+					"First post of this project",
+					System.currentTimeMillis(),
+					appUser,
+					null,
+					null,
+					"content null content content content content content content content content content content"
+			);
+
+			postService.savePost(post);
 		};
 	}
 

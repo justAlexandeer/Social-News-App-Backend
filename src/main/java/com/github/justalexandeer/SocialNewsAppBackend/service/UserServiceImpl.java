@@ -1,7 +1,7 @@
 package com.github.justalexandeer.SocialNewsAppBackend.service;
 
-import com.github.justalexandeer.SocialNewsAppBackend.domain.AppUser;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.Role;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.RoleRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser appUser = userRepository.findByUsername(username);
@@ -38,13 +45,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new User(appUser.getUsername(), appUser.getPassword(), authorities);
     }
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @Override
     public AppUser saveUser(AppUser appUser) {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
@@ -52,9 +52,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void addRoleToUser(String username, String roleName) {
+        AppUser appUser = userRepository.findByUsername(username);
+        Role role = roleRepository.findByName(roleName);
+        appUser.getRoles().add(role);
+    }
+
+    @Override
     public Role saveRole(Role role) {
         return roleRepository.save(role);
     }
+
 
     @Override
     public AppUser getAppUser(String userName) {

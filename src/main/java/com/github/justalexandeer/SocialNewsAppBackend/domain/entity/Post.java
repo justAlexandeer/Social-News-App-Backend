@@ -1,6 +1,4 @@
-package com.github.justalexandeer.SocialNewsAppBackend.domain;
-
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
 
 import javax.persistence.*;
 
@@ -19,10 +17,10 @@ public class Post {
     private String name;
     @Column(name = "date_of_creation")
     private Long date;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name ="app_user_id")
     private AppUser appUser;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
     @OneToMany(cascade = CascadeType.ALL)
@@ -30,9 +28,6 @@ public class Post {
     private Collection<Tag> tags = new ArrayList<>();
     @Column(name = "content")
     private String content;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
-    private Collection<Comment> comments = new ArrayList<>();
 
     public Post() {
 
@@ -45,8 +40,7 @@ public class Post {
             AppUser appUser,
             Category category,
             Collection<Tag> tags,
-            String content,
-            Collection<Comment> comments
+            String content
     ) {
         this.id = id;
         this.name = name;
@@ -55,7 +49,6 @@ public class Post {
         this.category = category;
         this.tags = tags;
         this.content = content;
-        this.comments = comments;
     }
 
     public Long getId() {
@@ -114,11 +107,4 @@ public class Post {
         this.content = content;
     }
 
-    public Collection<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Collection<Comment> comments) {
-        this.comments = comments;
-    }
 }

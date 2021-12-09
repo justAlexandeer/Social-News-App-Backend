@@ -1,4 +1,4 @@
-package com.github.justalexandeer.SocialNewsAppBackend.domain;
+package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
 
 import javax.persistence.*;
 

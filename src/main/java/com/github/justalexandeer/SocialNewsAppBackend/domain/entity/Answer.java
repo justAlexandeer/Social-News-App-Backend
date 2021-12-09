@@ -1,4 +1,4 @@
-package com.github.justalexandeer.SocialNewsAppBackend.domain;
+package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
 
 import javax.persistence.*;
 
@@ -15,15 +15,19 @@ public class Answer {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "comment_id")
     private Comment comment;
+    @OneToOne
+    @JoinColumn(name = "appuser_id")
+    private AppUser appUser;
 
     public Answer() {
 
     }
 
-    public Answer(Long id, String content, Comment comment) {
+    public Answer(Long id, String content, Comment comment, AppUser appUser) {
         this.id = id;
         this.content = content;
         this.comment = comment;
+        this.appUser = appUser;
     }
 
     public Long getId() {
@@ -48,5 +52,13 @@ public class Answer {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 }
