@@ -67,20 +67,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findAllPostBySearchCriteria(HashMap<String, String> mapParams) {
+    public Page<Post> findAllPostBySearchCriteriaAndSort(HashMap<String, String> mapParams, int page, int size ) {
         HashMap<PostSearchCriteria, String> mapCriteria = new HashMap<>();
         mapParams.forEach((name, value) -> {
             mapCriteria.put(PostSearchCriteria.fromParamStringToPostSearchCriteria(name), value);
         });
         PostSpecificationBuilder postSpecificationBuilder = new PostSpecificationBuilder();
-        mapCriteria.forEach((key, value) -> {
-            postSpecificationBuilder.with(key, value);
-            System.out.println(key + " " + value);
-        });
+        mapCriteria.forEach(postSpecificationBuilder::with);
 
-        return postRepository.findAll(postSpecificationBuilder.build());
+        Pageable pageable = PageRequest.of(page, size);
 
-
-        //return postRepository.findAll(PostSpecifications.isBeforeDate(date).and(PostSpecifications.isBeforeDate(date)));
+        return postRepository.findAll(postSpecificationBuilder.build(), pageable);
     }
 }

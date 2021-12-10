@@ -12,5 +12,5 @@ public interface PostService {
     Post getPostById(Long id);
     void savePost(Post post);
     Page<ResponseSimplePost> findAllPosts(int size, int page);
-    List<Post> findAllPostBySearchCriteria(HashMap<String, String> mapParams);
+    Page<Post> findAllPostBySearchCriteriaAndSort(HashMap<String, String> mapParams, int page, int size);
 }

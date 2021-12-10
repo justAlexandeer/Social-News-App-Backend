@@ -1,13 +1,20 @@
 package com.github.justalexandeer.SocialNewsAppBackend.util;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
+import com.github.justalexandeer.SocialNewsAppBackend.service.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+// Протестировать класс
 public class PostSpecificationBuilder {
 
     private Specification<Post> specification;
@@ -32,32 +39,43 @@ public class PostSpecificationBuilder {
             }
             case NAME_AUTHOR: {
                 if (value != null && !value.isEmpty()) {
-                    System.out.println("name author");
                     specification = specification.and(likeName(value));
                 }
                 break;
             }
             case ID_CATEGORY: {
                 if (value != null && !value.isEmpty()) {
-
+                    specification = specification.and(equalIdCategory(value));
                 }
                 break;
             }
-            case ID_TAG: {
+            case TAG: {
                 if (value != null && !value.isEmpty()) {
-
+                    specification = specification.and(equalsTag(value));
                 }
                 break;
             }
+            case TAGS_IN: {
+                if (value != null && !value.isEmpty()) {
+                    specification = specification.and(tagsIn(value));
+                }
+                break;
+            }
+//            case TAGS_ALL: {
+//                if (value != null && !value.isEmpty()) {
+//                    specification = specification.and(tagsAll(value));
+//                }
+//                break;
+//            }
             case POST_NAME: {
                 if (value != null && !value.isEmpty()) {
-
+                    specification = specification.and(likePostName(value));
                 }
                 break;
             }
             case POST_CONTENT: {
                 if (value != null && !value.isEmpty()) {
-
+                    specification = specification.and(likePostContent(value));
                 }
                 break;
             }
@@ -80,11 +98,33 @@ public class PostSpecificationBuilder {
         return (Specification<Post>) (root, query, cb) -> cb.lessThan(root.get("date"), Long.valueOf(value));
     }
 
+    private Specification<Post> equalIdCategory(String value) {
+        return (Specification<Post>) (root, query, cb) -> cb.equal(root.get("category_id"), Long.valueOf(value));
+    }
+
     private Specification<Post> likeName(String value) {
         return (Specification<Post>) (root, query, cb) -> cb.like(root.get("appUser").get("name"), "%" + value + "%");
     }
+
+    private Specification<Post> equalsTag(String value) {
+        return (Specification<Post>) (root, query, cb) -> root.join("tags").get("id").in(Long.valueOf(value));
+    }
+
+//    private Specification<Post> tagsAll(String value) {
 //
-//    private Specification<Post> equalsTag(String value) {
-//        return (Specification<Post>) (root, query, cb) -> cb.equal(root.get("appUser.name"), Long.valueOf(value));
 //    }
+
+    private Specification<Post> tagsIn(String value) {
+        List<String> listOfTagsId = new ArrayList(Arrays.asList(value.split(",")));
+        return (Specification<Post>) (root, query, cb) -> root.join("tags").get("id").in(listOfTagsId);
+    }
+
+    private Specification<Post> likePostName(String value) {
+        return (Specification<Post>) (root, query, cb) -> cb.like(root.get("name"), "%" + value + "%");
+    }
+
+    private Specification<Post> likePostContent(String value) {
+        return (Specification<Post>) (root, query, cb) -> cb.like(root.get("content"), "%" + value + "%");
+    }
+
 }

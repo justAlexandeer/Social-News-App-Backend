@@ -37,29 +37,34 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public ResponseEntity<List<Post>> findPostByName(
-            @RequestParam(required = false) String afterPostDate,
-            @RequestParam(required = false) String beforePostDate,
-            @RequestParam(required = false) String nameAuthor,
-            @RequestParam(required = false) String idCategory,
-            @RequestParam(required = false) String idTag,
-            @RequestParam(required = false) String postName,
-            @RequestParam(required = false) String postContent
-    ) {
+    public ResponseEntity<Page<Post>> findPostByName(
+            @RequestParam(value = "afterPostDate", required = false) String afterPostDate,
+            @RequestParam(value = "beforePostDate", required = false) String beforePostDate,
+            @RequestParam(value = "nameAuthor", required = false) String nameAuthor,
+            @RequestParam(value = "idCategory", required = false) String idCategory,
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "tagsIn", required = false) String tagsIn,
+//            @RequestParam(value = "tagsAll", required = false) String tagsAll,
+            @RequestParam(value = "postName", required = false) String postName,
+            @RequestParam(value = "postContent", required = false) String postContent,
+            @RequestParam int page,
+            @RequestParam int size
+        ) {
+
         HashMap<String, String> mapParams = new HashMap<>();
         mapParams.put("afterPostDate", afterPostDate);
         mapParams.put("beforePostDate", beforePostDate);
         mapParams.put("nameAuthor", nameAuthor);
         mapParams.put("idCategory", idCategory);
-        mapParams.put("idTag", idTag);
+        mapParams.put("tag", tag);
+        mapParams.put("tagsIn", tagsIn);
+//        mapParams.put("tagsAll", tagsAll);
         mapParams.put("postName", postName);
         mapParams.put("postContent", postContent);
 
 
-        return new ResponseEntity<>((postService.findAllPostBySearchCriteria(mapParams)),HttpStatus.OK);
-        //return new ResponseEntity<>(postService.findPostByName(name), HttpStatus.OK);
+        return new ResponseEntity<>((postService.findAllPostBySearchCriteriaAndSort(mapParams, page, size)), HttpStatus.OK);
     }
-
 
 
 //    @GetMapping("/posts")

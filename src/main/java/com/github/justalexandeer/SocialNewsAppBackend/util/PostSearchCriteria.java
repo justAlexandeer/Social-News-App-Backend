@@ -5,7 +5,9 @@ public enum PostSearchCriteria {
     BEFORE_POST_DATE,
     NAME_AUTHOR,
     ID_CATEGORY,
-    ID_TAG,
+    TAG,
+    TAGS_IN,
+//    TAGS_ALL,
     POST_NAME,
     POST_CONTENT;
 
@@ -19,8 +21,12 @@ public enum PostSearchCriteria {
                 return NAME_AUTHOR;
             case "idCategory":
                 return ID_CATEGORY;
-            case "idTag":
-                return ID_TAG;
+            case "tag":
+                return TAG;
+            case "tagsIn":
+                return TAGS_IN;
+//            case "tagsAll":
+//                return TAGS_ALL;
             case "postName":
                 return POST_NAME;
             case "postContent":

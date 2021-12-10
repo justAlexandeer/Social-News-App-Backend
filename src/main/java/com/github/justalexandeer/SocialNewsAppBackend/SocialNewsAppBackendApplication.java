@@ -3,10 +3,8 @@ package com.github.justalexandeer.SocialNewsAppBackend;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
-import com.github.justalexandeer.SocialNewsAppBackend.service.AnswerService;
-import com.github.justalexandeer.SocialNewsAppBackend.service.CommentService;
-import com.github.justalexandeer.SocialNewsAppBackend.service.PostService;
-import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
+import com.github.justalexandeer.SocialNewsAppBackend.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,7 +26,8 @@ public class SocialNewsAppBackendApplication {
 			UserService userService,
 			PostService postService,
 			CommentService commentService,
-			AnswerService answerService
+			AnswerService answerService,
+			TagService tagService
 	) {
 		return args -> {
 			userService.saveRole(new Role(null, "ROLE_USER"));
@@ -51,6 +50,9 @@ public class SocialNewsAppBackendApplication {
 			);
 
 			postService.savePost(post);
+
+			tagService.saveTag(new Tag(100L, "first Tag"));
+			tagService.saveTag(new Tag(101L, "Second Tag"));
 		};
 	}
 
