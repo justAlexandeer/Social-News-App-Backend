@@ -1,6 +1,7 @@
 package com.github.justalexandeer.SocialNewsAppBackend.repository;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

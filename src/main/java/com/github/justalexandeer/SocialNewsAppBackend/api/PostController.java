@@ -1,43 +1,93 @@
 package com.github.justalexandeer.SocialNewsAppBackend.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Answer;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
+import com.github.justalexandeer.SocialNewsAppBackend.service.AnswerService;
 import com.github.justalexandeer.SocialNewsAppBackend.service.CommentService;
 import com.github.justalexandeer.SocialNewsAppBackend.service.PostService;
+import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
+import com.github.justalexandeer.SocialNewsAppBackend.util.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
+// Исправлять все контролеры на возвращаемые значения
 @RestController
 @RequestMapping("/api")
 public class PostController {
     private final PostService postService;
     private final CommentService commentService;
+    private final AnswerService answerService;
+    private final UserService userService;
+    private final PermissionManager permissionManager;
 
     @Autowired
-    public PostController(PostService postService, CommentService commentService) {
+    public PostController(
+            PostService postService,
+            CommentService commentService,
+            AnswerService answerService,
+            UserService userService,
+            PermissionManager permissionManager
+    ) {
         this.postService = postService;
         this.commentService = commentService;
+        this.answerService = answerService;
+        this.userService = userService;
+        this.permissionManager = permissionManager;
     }
 
-    @GetMapping("/posts")
-    public ResponseEntity<Page<ResponseSimplePost>> findAllPost(
-            @RequestParam int size,
-            @RequestParam int page,
-            @RequestParam long dateAfter
+    @GetMapping("/changePost")
+    public ResponseEntity<Void> changePost(
+            HttpServletRequest request,
+            @RequestParam(value = "postId") String postId,
+            @RequestParam(value = "postName", required = false) String postName,
+            @RequestParam(value = "postContent", required = false) String postContent
     ) {
-        return new ResponseEntity<>(postService.findAllPosts(size, page), HttpStatus.OK);
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (permissionManager.havePermissionToChangePost(authorizationHeader, postId)) {
+            postService.changePost(postId, postName, postContent);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        }
+    }
+
+    @GetMapping("/deletePost")
+    public ResponseEntity<Void> deletePost(
+            @RequestParam(value = "postId") String postId
+    ) {
+        postService.deletePost(Long.valueOf(postId));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/post")
-    public ResponseEntity<Page<Post>> findPostByName(
+    public ResponseEntity<ResponseFullPost> getPost(
+            @RequestParam(value = "postId") String postId
+    ) {
+        return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
+    }
+
+    @GetMapping("/posts")
+    public ResponseEntity<Page<ResponseSimplePost>> getAllPostBySearchCriteriaAndSort(
             @RequestParam(value = "afterPostDate", required = false) String afterPostDate,
             @RequestParam(value = "beforePostDate", required = false) String beforePostDate,
             @RequestParam(value = "nameAuthor", required = false) String nameAuthor,
@@ -48,9 +98,9 @@ public class PostController {
             @RequestParam(value = "postName", required = false) String postName,
             @RequestParam(value = "postContent", required = false) String postContent,
             @RequestParam int page,
-            @RequestParam int size
-        ) {
-
+            @RequestParam int size,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "default") String sortBy
+    ) {
         HashMap<String, String> mapParams = new HashMap<>();
         mapParams.put("afterPostDate", afterPostDate);
         mapParams.put("beforePostDate", beforePostDate);
@@ -62,14 +112,45 @@ public class PostController {
         mapParams.put("postName", postName);
         mapParams.put("postContent", postContent);
 
-
-        return new ResponseEntity<>((postService.findAllPostBySearchCriteriaAndSort(mapParams, page, size)), HttpStatus.OK);
+        return new ResponseEntity<>(
+                (postService.findAllPostBySearchCriteriaAndSort(mapParams, page, size, sortBy)),
+                HttpStatus.OK
+        );
     }
 
+    // Тест
+    @GetMapping("/addComment")
+    public ResponseEntity<Void> addComment(
+            @RequestParam(value = "postId") String postId
+    ) {
+        Post post = postService.getPostById(Long.valueOf(postId));
+        AppUser appUser = userService.getAppUser("john");
+        commentService.addComment(
+                new Comment(
+                        1L,
+                        "content content content",
+                        post,
+                        appUser
+                )
+        );
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/addAnswer")
+    public ResponseEntity<Void> addAnswer(
+            @RequestParam(value = "commentId") String commentId
+    ) {
+        Comment comment = commentService.getCommentById(Long.valueOf(commentId));
+        AppUser appUser = userService.getAppUser("john");
+        answerService.addAnswer(
+                new Answer(
+                        1L,
+                        "content content content",
+                        comment,
+                        appUser
+                )
+        );
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-//    @GetMapping("/posts")
-//    public ResponseEntity<List<Post>> getAllPosts() {
-//        return new ResponseEntity<>(postService.getAllPosts(), HttpStatus.OK);
-//    }
 
 }

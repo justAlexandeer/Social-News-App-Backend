@@ -2,6 +2,7 @@ package com.github.justalexandeer.SocialNewsAppBackend.service;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 
 import java.util.List;
 

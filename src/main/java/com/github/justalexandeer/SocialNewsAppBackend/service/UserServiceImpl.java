@@ -63,7 +63,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return roleRepository.save(role);
     }
 
-
     @Override
     public AppUser getAppUser(String userName) {
         return userRepository.findByUsername(userName);

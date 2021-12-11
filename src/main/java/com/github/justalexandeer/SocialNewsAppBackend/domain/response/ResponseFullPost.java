@@ -1,46 +1,32 @@
-package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
+package com.github.justalexandeer.SocialNewsAppBackend.domain.response;
 
-import javax.persistence.*;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static javax.persistence.GenerationType.AUTO;
-
-@Entity
-@Table(name = "post")
-public class Post {
-    @Id
-    @GeneratedValue(strategy = AUTO)
+public class ResponseFullPost {
     private Long id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "date_of_creation")
     private Long date;
-    @ManyToOne
-    @JoinColumn(name ="app_user_id")
-    private AppUser appUser;
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    private ResponseAppUser appUser;
     private Category category;
-    @OneToMany
-    @JoinColumn(name = "post_id")
     private Collection<Tag> tags = new ArrayList<>();
-    @Column(name = "content")
     private String content;
+    private Page<ResponseComment> comments;
 
-    public Post() {
-
-    }
-
-    public Post(
+    public ResponseFullPost(
             Long id,
             String name,
             Long date,
-            AppUser appUser,
+            ResponseAppUser appUser,
             Category category,
             Collection<Tag> tags,
-            String content
+            String content,
+            Page<ResponseComment> comments
     ) {
         this.id = id;
         this.name = name;
@@ -49,6 +35,7 @@ public class Post {
         this.category = category;
         this.tags = tags;
         this.content = content;
+        this.comments = comments;
     }
 
     public Long getId() {
@@ -75,11 +62,11 @@ public class Post {
         this.date = date;
     }
 
-    public AppUser getAppUser() {
+    public ResponseAppUser getAppUser() {
         return appUser;
     }
 
-    public void setAppUser(AppUser appUser) {
+    public void setAppUser(ResponseAppUser appUser) {
         this.appUser = appUser;
     }
 
@@ -107,4 +94,11 @@ public class Post {
         this.content = content;
     }
 
+    public Page<ResponseComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Page<ResponseComment> comments) {
+        this.comments = comments;
+    }
 }
