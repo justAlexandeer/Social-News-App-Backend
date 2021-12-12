@@ -2,6 +2,9 @@ package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
@@ -12,7 +15,13 @@ public class Tag {
     private Long id;
     @Column(name = "name")
     private String name;
-
+//    @ManyToMany()
+//    @JoinTable(
+//            name = "post_tag",
+//            joinColumns = @JoinColumn(name = "tag_id"),
+//            inverseJoinColumns = @JoinColumn(name = "post_id")
+//    )
+//    private Collection<Post> post = new ArrayList<>();
     public Tag() {
 
     }

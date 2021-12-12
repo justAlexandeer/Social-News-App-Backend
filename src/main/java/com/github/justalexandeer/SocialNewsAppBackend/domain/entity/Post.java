@@ -18,13 +18,18 @@ public class Post {
     @Column(name = "date_of_creation")
     private Long date;
     @ManyToOne
-    @JoinColumn(name ="app_user_id")
+    @JoinColumn(name = "app_user_id")
     private AppUser appUser;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-    @OneToMany
-    @JoinColumn(name = "post_id")
+    @ManyToMany()
+//    @JoinTable(
+//            name = "post_tag",
+//            joinColumns = @JoinColumn(name = "post_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tag_id")
+//    )
+    @Column(name = "tags")
     private Collection<Tag> tags = new ArrayList<>();
     @Column(name = "content")
     private String content;

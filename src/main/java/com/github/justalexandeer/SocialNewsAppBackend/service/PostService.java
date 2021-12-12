@@ -1,5 +1,6 @@
 package com.github.justalexandeer.SocialNewsAppBackend.service;
 
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
@@ -18,6 +19,8 @@ public interface PostService {
     void deletePost(Long postId);
 
     void changePost(String postId, String postName, String postContent);
+
+    void createPost(String appUserName, String postName, String postContent, String categoryId, String tagsId);
 
     Page<ResponseSimplePost> findAllPostBySearchCriteriaAndSort(
             HashMap<String, String> mapParams,

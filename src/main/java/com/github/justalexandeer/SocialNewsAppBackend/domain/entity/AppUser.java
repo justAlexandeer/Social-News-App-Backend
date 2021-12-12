@@ -19,7 +19,7 @@ public class AppUser {
     private String username;
     @Column(name = "password")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany()
     @Column(name = "roles")
     private Collection<Role> roles = new ArrayList<>();
 

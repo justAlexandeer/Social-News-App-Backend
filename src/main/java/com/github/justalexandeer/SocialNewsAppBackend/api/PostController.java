@@ -7,10 +7,7 @@ import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
-import com.github.justalexandeer.SocialNewsAppBackend.service.AnswerService;
-import com.github.justalexandeer.SocialNewsAppBackend.service.CommentService;
-import com.github.justalexandeer.SocialNewsAppBackend.service.PostService;
-import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
+import com.github.justalexandeer.SocialNewsAppBackend.service.*;
 import com.github.justalexandeer.SocialNewsAppBackend.util.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,6 +52,20 @@ public class PostController {
         this.permissionManager = permissionManager;
     }
 
+    @GetMapping("/createPost")
+    public ResponseEntity<Void> createPost(
+            HttpServletRequest request,
+            @RequestParam(value = "postName") String postName,
+            @RequestParam(value = "postContent") String postContent,
+            @RequestParam(value = "categoryId") String categoryId,
+            @RequestParam(value = "tagsId", required = false) String tagsId
+    ) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        String appUserName = permissionManager.getUserName(authorizationHeader);
+        postService.createPost(appUserName, postName, postContent, categoryId, tagsId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/changePost")
     public ResponseEntity<Void> changePost(
             HttpServletRequest request,
@@ -79,14 +90,14 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/post")
+    @GetMapping("/getPost")
     public ResponseEntity<ResponseFullPost> getPost(
             @RequestParam(value = "postId") String postId
     ) {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
-    @GetMapping("/posts")
+    @GetMapping("/getPosts")
     public ResponseEntity<Page<ResponseSimplePost>> getAllPostBySearchCriteriaAndSort(
             @RequestParam(value = "afterPostDate", required = false) String afterPostDate,
             @RequestParam(value = "beforePostDate", required = false) String beforePostDate,
@@ -135,22 +146,4 @@ public class PostController {
         );
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @GetMapping("/addAnswer")
-    public ResponseEntity<Void> addAnswer(
-            @RequestParam(value = "commentId") String commentId
-    ) {
-        Comment comment = commentService.getCommentById(Long.valueOf(commentId));
-        AppUser appUser = userService.getAppUser("john");
-        answerService.addAnswer(
-                new Answer(
-                        1L,
-                        "content content content",
-                        comment,
-                        appUser
-                )
-        );
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
 }

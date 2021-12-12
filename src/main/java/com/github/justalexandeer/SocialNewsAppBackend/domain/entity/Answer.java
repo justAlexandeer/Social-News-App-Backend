@@ -12,7 +12,7 @@ public class Answer {
     private Long id;
     @Column(name = "content")
     private String content;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
     @OneToOne
