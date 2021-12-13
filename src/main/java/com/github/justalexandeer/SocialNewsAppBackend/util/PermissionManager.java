@@ -6,8 +6,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Answer;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.repository.AnswerRepository;
+import com.github.justalexandeer.SocialNewsAppBackend.repository.CommentRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.service.AnswerService;
+import com.github.justalexandeer.SocialNewsAppBackend.service.CommentService;
 import com.github.justalexandeer.SocialNewsAppBackend.service.PostService;
 import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +23,20 @@ import java.util.List;
 public class PermissionManager {
     private final PostService postService;
     private final UserService userService;
-    private final AnswerService answerService;
+    private final AnswerRepository answerRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public PermissionManager(PostService postService, UserService userService, AnswerService answerService) {
+    public PermissionManager(
+            PostService postService,
+            UserService userService,
+            AnswerRepository answerRepository,
+            CommentRepository commentRepository
+    ) {
         this.postService = postService;
         this.userService = userService;
-        this.answerService = answerService;
+        this.answerRepository = answerRepository;
+        this.commentRepository = commentRepository;
     }
 
     public boolean havePermissionToChangePost(String authorizationHeader, String idPost) {
@@ -39,9 +50,17 @@ public class PermissionManager {
     public boolean havePermissionToChangeAnswer(String authorizationHeader, String idAnswer) {
         if(isAdmin(authorizationHeader))
             return true;
-        Answer answer = answerService.getAnswerById(idAnswer);
+        Answer answer = answerRepository.getById(Long.valueOf(idAnswer));
         AppUser appUser = userService.getAppUser(getUserName(authorizationHeader));
         return answer.getAppUser().getUsername().equals(appUser.getUsername());
+    }
+
+    public boolean havePermissionToChangeComment(String authorizationHeader, String idComment) {
+        if(isAdmin(authorizationHeader))
+            return true;
+        Comment comment = commentRepository.getById(Long.valueOf(idComment));
+        AppUser appUser = userService.getAppUser(getUserName(authorizationHeader));
+        return comment.getAppUser().getUsername().equals(appUser.getUsername());
     }
 
     public String getUserName(String authorizationHeader) {
@@ -65,7 +84,6 @@ public class PermissionManager {
         Algorithm algorithm = Algorithm.HMAC256(Util.getSecretKey().getBytes());
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(authorizationHeader);
-        String userName = decodedJWT.getSubject();
         return decodedJWT.getClaim("roles").asList(String.class);
     }
 

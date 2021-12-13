@@ -41,7 +41,24 @@ public class DataMapper {
             Page<Comment> pageOfComment,
             AnswerRepository answerRepository
     ) {
-        Page<ResponseComment> pageOfResponseComment = pageOfComment.map(comment -> {
+        Page<ResponseComment> pageOfResponseComment = mapFromPageCommentToPageResponseComment(pageOfComment, answerRepository);
+        return new ResponseFullPost(
+                post.getId(),
+                post.getName(),
+                post.getDate(),
+                mapAppUserToResponseAppUser(post.getAppUser()),
+                post.getCategory(),
+                post.getTags(),
+                post.getContent(),
+                pageOfResponseComment
+        );
+    }
+
+    public Page<ResponseComment> mapFromPageCommentToPageResponseComment (
+            Page<Comment> pageOfComment,
+            AnswerRepository answerRepository
+    ) {
+        return pageOfComment.map(comment -> {
             List<Answer> answerList = answerRepository.findAllByComment(comment);
             List<ResponseAnswer> responseAnswerList = new ArrayList<>();
             answerList.forEach(answer -> {
@@ -60,16 +77,6 @@ public class DataMapper {
                     responseAnswerList
             );
         });
-        return new ResponseFullPost(
-                post.getId(),
-                post.getName(),
-                post.getDate(),
-                mapAppUserToResponseAppUser(post.getAppUser()),
-                post.getCategory(),
-                post.getTags(),
-                post.getContent(),
-                pageOfResponseComment
-        );
     }
 
     private ResponseAppUser mapAppUserToResponseAppUser(AppUser appUser) {

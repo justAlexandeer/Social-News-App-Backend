@@ -24,11 +24,6 @@ public class Post {
     @JoinColumn(name = "category_id")
     private Category category;
     @ManyToMany()
-//    @JoinTable(
-//            name = "post_tag",
-//            joinColumns = @JoinColumn(name = "post_id"),
-//            inverseJoinColumns = @JoinColumn(name = "tag_id")
-//    )
     @Column(name = "tags")
     private Collection<Tag> tags = new ArrayList<>();
     @Column(name = "content")

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Transactional
 public class TagServiceImpl implements TagService {
@@ -22,14 +25,45 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void addTagToPost(Long postId, Long tagId) {
-        Post post = postRepository.getById(postId);
-        Tag tag = tagRepository.getById(tagId);
+    public void saveTag(Tag tag) {
+        tagRepository.save(tag);
+    }
+
+    @Override
+    public List<Tag> findAllTags() {
+        return tagRepository.findAll();
+    }
+
+    @Override
+    public void setTagToPost(String postId, String tagId) {
+        Post post = postRepository.getById(Long.valueOf(postId));
+        Tag tag = tagRepository.getById(Long.valueOf(tagId));
         post.getTags().add(tag);
     }
 
     @Override
-    public void saveTag(Tag tag) {
+    public void createTag(String tagName) {
+        Tag tag = new Tag(null, tagName);
         tagRepository.save(tag);
     }
+
+    @Override
+    public void changeTag(String tagId, String tagName) {
+        Tag tag = tagRepository.getById(Long.valueOf(tagId));
+        tag.setName(tagName);
+    }
+
+    @Override
+    public void deleteTag(String tagId) {
+        Tag tag = tagRepository.getById(Long.valueOf(tagId));
+        ArrayList<Tag> listOfTags = new ArrayList<>();
+        listOfTags.add(tag);
+        List<Post> listOfPosts = postRepository.findAllByTagsIn(listOfTags);
+        listOfPosts.forEach(post -> {
+            System.out.println(post.getId());
+            post.getTags().removeAll(listOfTags);
+        });
+        tagRepository.deleteById(Long.valueOf(tagId));
+    }
+
 }

@@ -130,7 +130,7 @@ public class PostServiceImpl implements PostService {
     public ResponseFullPost getPost(String idPost) {
         Pageable pageable = PageRequest.of(0, 20);
         Post post = postRepository.getById(Long.valueOf(idPost));
-        Page<Comment> pageOfComments = commentRepository.findAll(pageable);
+        Page<Comment> pageOfComments = commentRepository.findAllByPost(post, pageable);
 
         return dataMapper.mapToResponseFullPost(post, pageOfComments, answerRepository);
     }

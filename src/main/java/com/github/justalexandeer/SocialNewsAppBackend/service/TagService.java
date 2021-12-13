@@ -5,7 +5,13 @@ import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface TagService {
-    void addTagToPost(Long postId, Long tagId);
     void saveTag(Tag tag);
+    List<Tag> findAllTags();
+    void setTagToPost(String postId, String tagId);
+    void createTag(String tagName);
+    void changeTag(String tagId, String tagName);
+    void deleteTag(String tagId);
 }

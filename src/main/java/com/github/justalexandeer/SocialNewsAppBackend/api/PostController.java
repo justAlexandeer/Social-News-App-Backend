@@ -128,22 +128,4 @@ public class PostController {
                 HttpStatus.OK
         );
     }
-
-    // Тест
-    @GetMapping("/addComment")
-    public ResponseEntity<Void> addComment(
-            @RequestParam(value = "postId") String postId
-    ) {
-        Post post = postService.getPostById(Long.valueOf(postId));
-        AppUser appUser = userService.getAppUser("john");
-        commentService.addComment(
-                new Comment(
-                        1L,
-                        "content content content",
-                        post,
-                        appUser
-                )
-        );
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

@@ -12,7 +12,7 @@ public class Comment {
     private Long id;
     @Column(name = "content")
     private String content;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "post_id")
     private Post post;
     @OneToOne
