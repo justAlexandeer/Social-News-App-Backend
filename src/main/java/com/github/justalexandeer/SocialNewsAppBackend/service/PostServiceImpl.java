@@ -1,15 +1,13 @@
 package com.github.justalexandeer.SocialNewsAppBackend.service;
 
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.*;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseAppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.AnswerRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.PostRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.CommentRepository;
+import com.github.justalexandeer.SocialNewsAppBackend.repository.TagRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -33,6 +33,7 @@ public class PostServiceImpl implements PostService {
     private final UserServiceImpl userService;
     private final CategoryService categoryService;
     private final DataMapper dataMapper;
+    private final TagRepository tagRepository;
 
     @Autowired
     public PostServiceImpl(
@@ -41,7 +42,8 @@ public class PostServiceImpl implements PostService {
             CommentRepository commentRepository,
             AnswerRepository answerRepository,
             CategoryService categoryService,
-            UserServiceImpl userService
+            UserServiceImpl userService,
+            TagRepository tagRepository
     ) {
         this.postRepository = postRepository;
         this.dataMapper = dataMapper;
@@ -49,6 +51,7 @@ public class PostServiceImpl implements PostService {
         this.answerRepository = answerRepository;
         this.userService = userService;
         this.categoryService = categoryService;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -88,18 +91,23 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    // Добавить теги
     @Override
     public void createPost(String appUserName, String postName, String postContent, String categoryId, String tagsId) {
         AppUser appUser = userService.getAppUser(appUserName);
         Category category = categoryService.getCategoryById(Long.valueOf(categoryId));
+        List<String> listOfTagsId = new ArrayList(Arrays.asList(tagsId.split(",")));
+        List<Tag> listOfTags = new ArrayList<>();
+        for(String tagId: listOfTagsId) {
+            Tag tag = tagRepository.getById(Long.valueOf(tagId));
+            listOfTags.add(tag);
+        }
         Post post = new Post(
                 null,
                 postName,
                 System.currentTimeMillis(),
                 appUser,
                 category,
-                null,
+                listOfTags,
                 postContent
         );
         postRepository.save(post);

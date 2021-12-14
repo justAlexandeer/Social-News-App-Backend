@@ -71,6 +71,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/registration")
+    public ResponseEntity<String> registerAppUser(HttpServletRequest request) {
+        String username = request.getParameter("username");
+        String name = request.getParameter("name");
+        String password = request.getParameter("password");
+
+        return new ResponseEntity<>(userService.createAppUser(username, name, password), HttpStatus.OK);
+    }
+
+
     @GetMapping("/users")
     public ResponseEntity<List<AppUser>> getAppUsers() {
         return new ResponseEntity<>(userService.getAllAppUsers(), HttpStatus.OK);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -39,6 +40,16 @@ public class TagServiceImpl implements TagService {
         Post post = postRepository.getById(Long.valueOf(postId));
         Tag tag = tagRepository.getById(Long.valueOf(tagId));
         post.getTags().add(tag);
+    }
+
+    @Override
+    public void setTagsToPost(String postId, String tagsId) {
+        List<String> listOfTagsId = new ArrayList(Arrays.asList(tagsId.split(",")));
+        Post post = postRepository.getById(Long.valueOf(postId));
+        for(String tagId: listOfTagsId) {
+            Tag tag = tagRepository.getById(Long.valueOf(tagId));
+            post.getTags().add(tag);
+        }
     }
 
     @Override

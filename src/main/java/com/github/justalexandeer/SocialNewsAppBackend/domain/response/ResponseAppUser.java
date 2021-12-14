@@ -3,22 +3,12 @@ package com.github.justalexandeer.SocialNewsAppBackend.domain.response;
 import javax.persistence.Column;
 
 public class ResponseAppUser {
-    private Long id;
     private String name;
     private String username;
 
-    public ResponseAppUser(Long id, String name, String username) {
-        this.id = id;
+    public ResponseAppUser(String name, String username) {
         this.name = name;
         this.username = username;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

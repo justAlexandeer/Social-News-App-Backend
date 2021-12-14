@@ -54,6 +54,21 @@ public class TagController {
         }
     }
 
+    @GetMapping("/setTagsToPost")
+    public ResponseEntity<String> setTagsToPost(
+            HttpServletRequest request,
+            @RequestParam String postId,
+            @RequestParam String tagsId
+    ) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if(permissionManager.havePermissionToChangePost(authorizationHeader, postId)) {
+            tagService.setTagsToPost(postId, tagsId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        }
+    }
+
     @GetMapping("/createTag")
     public ResponseEntity<Void> createTag(
             @RequestParam(value = "tagName") String tagName

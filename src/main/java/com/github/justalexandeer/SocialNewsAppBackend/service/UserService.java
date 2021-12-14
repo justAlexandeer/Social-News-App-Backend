@@ -12,4 +12,5 @@ public interface UserService {
     void addRoleToUser(String username, String roleName);
     List<AppUser> getAllAppUsers();
     AppUser getAppUser(String userName);
+    String createAppUser(String userName, String name, String password);
 }

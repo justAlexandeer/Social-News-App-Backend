@@ -19,7 +19,6 @@ public class DataMapper {
     public Page<ResponseSimplePost> mapPagePostToPageSimplePost(Page<Post> page) {
         return page.map(post -> {
             ResponseAppUser responseAppUser = new ResponseAppUser(
-                    post.getAppUser().getId(),
                     post.getAppUser().getName(),
                     post.getAppUser().getUsername()
             );
@@ -81,7 +80,6 @@ public class DataMapper {
 
     private ResponseAppUser mapAppUserToResponseAppUser(AppUser appUser) {
         return new ResponseAppUser(
-                appUser.getId(),
                 appUser.getName(),
                 appUser.getUsername()
         );

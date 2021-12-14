@@ -33,11 +33,11 @@ public class SocialNewsAppBackendApplication {
 			userService.saveRole(new Role(null, "ROLE_USER"));
 			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 
-			final AppUser appUser1 = new AppUser(null, "Jonh Piter", "john", "1234", new ArrayList<>());
+			final AppUser appUser1 = new AppUser("Jonh Piter", "john", "1234", new ArrayList<>());
 			userService.saveUser(appUser1);
-			final AppUser appUser2 = new AppUser(null, "Sergey Victor", "sergey", "4321", new ArrayList<>());
+			final AppUser appUser2 = new AppUser("Sergey Victor", "sergey", "4321", new ArrayList<>());
 			userService.saveUser(appUser2);
-			final AppUser appUser3 = new AppUser(null, "AAAA", "asdfasdf", "43210", new ArrayList<>());
+			final AppUser appUser3 = new AppUser("AAAA", "asdfasdf", "43210", new ArrayList<>());
 			userService.saveUser(appUser3);
 
 			userService.addRoleToUser("john", "ROLE_USER");

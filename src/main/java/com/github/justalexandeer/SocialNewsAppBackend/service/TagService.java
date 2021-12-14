@@ -11,6 +11,7 @@ public interface TagService {
     void saveTag(Tag tag);
     List<Tag> findAllTags();
     void setTagToPost(String postId, String tagId);
+    void setTagsToPost(String postId, String tagsId);
     void createTag(String tagName);
     void changeTag(String tagId, String tagName);
     void deleteTag(String tagId);
