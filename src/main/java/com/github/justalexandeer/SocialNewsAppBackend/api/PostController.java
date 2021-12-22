@@ -97,6 +97,11 @@ public class PostController {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllPost")
+    public ResponseEntity<List<Post>> getAllPosts() {
+        return new ResponseEntity<>(postService.getAllPosts(), HttpStatus.OK);
+    }
+
     @GetMapping("/getPosts")
     public ResponseEntity<Page<ResponseSimplePost>> getAllPostBySearchCriteriaAndSort(
             @RequestParam(value = "afterPostDate", required = false) String afterPostDate,
