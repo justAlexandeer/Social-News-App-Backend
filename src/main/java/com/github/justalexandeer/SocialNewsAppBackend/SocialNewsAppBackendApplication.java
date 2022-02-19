@@ -1,9 +1,6 @@
 package com.github.justalexandeer.SocialNewsAppBackend;
 
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.*;
 import com.github.justalexandeer.SocialNewsAppBackend.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class SocialNewsAppBackendApplication extends SpringBootServletInitializer {
@@ -34,6 +32,7 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 			PostService postService,
 			CommentService commentService,
 			AnswerService answerService,
+			CategoryService categoryService,
 			TagService tagService
 	) {
 		return args -> {
@@ -50,39 +49,91 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 			userService.addRoleToUser("john", "ROLE_USER");
 			userService.addRoleToUser("sergey", "ROLE_ADMIN");
 
-			Post post1 = new Post(
-					1L,
-					"First post of this project",
-					System.currentTimeMillis(),
-					appUser1,
-					null,
-					null,
-					"content null content content content content content content content content content content"
-			);
-            Post post2 = new Post(
-                    1L,
-                    "Second post of this project",
-					1639201012000L,
-                    appUser2,
-                    null,
-                    null,
-                    "no content"
-            );
-			Post post3 = new Post(
-					1L,
-					"Second post of this project",
-					System.currentTimeMillis(),
-					appUser3,
-					null,
-					null,
-					"no content"
-			);
-			postService.savePost(post1);
-            postService.savePost(post2);
-            postService.savePost(post3);
-
 			tagService.saveTag(new Tag(100L, "first Tag"));
 			tagService.saveTag(new Tag(101L, "Second Tag"));
+
+			categoryService.createDefaultCategory("Politics");
+			categoryService.createDefaultCategory("Sport");
+			categoryService.createDefaultCategory("Finance");
+			categoryService.createDefaultCategory("Auto");
+			categoryService.createDefaultCategory("Style");
+			categoryService.createCategory("Investments");
+			categoryService.createCategory("Conferences");
+
+			List<Category> listDefaultCategory = categoryService.findAllDefaultCategories().getData();
+
+			for (int i = 4; i >= 0; i--) {
+				postService.savePost(new Post(
+						1L,
+						i + " OF Politics",
+						System.currentTimeMillis(),
+						appUser1,
+						listDefaultCategory.get(0),
+						null,
+						"content null content content content content content content content content content content"
+				));
+			}
+
+			for (int i = 4; i >= 0; i--) {
+				postService.savePost(new Post(
+						1L,
+						i + " OF Sport",
+						System.currentTimeMillis(),
+						appUser1,
+						listDefaultCategory.get(1),
+						null,
+						"content null content content content content content content content content content content"
+				));
+			}
+
+			for (int i = 4; i >= 0; i--) {
+				postService.savePost(new Post(
+						1L,
+						i + " OF Finance",
+						System.currentTimeMillis(),
+						appUser1,
+						listDefaultCategory.get(2),
+						null,
+						"content null content content content content content content content content content content"
+				));
+			}
+
+			for (int i = 4; i >= 0; i--) {
+				postService.savePost(new Post(
+						1L,
+						i + " OF Auto",
+						System.currentTimeMillis(),
+						appUser1,
+						listDefaultCategory.get(3),
+						null,
+						"content null content content content content content content content content content content"
+				));
+			}
+
+			for (int i = 4; i >= 0; i--) {
+				postService.savePost(new Post(
+						1L,
+						i + " OF Style",
+						System.currentTimeMillis(),
+						appUser1,
+						listDefaultCategory.get(4),
+						null,
+						"content null content content content content content content content content content content"
+				));
+			}
+
+			for (int i = 4; i >= 0; i--) {
+				postService.savePost(new Post(
+						1L,
+						i + " OF not default",
+						System.currentTimeMillis(),
+						appUser1,
+						null,
+						null,
+						"content null content content content content content content content content content content"
+				));
+			}
+
 		};
 	}
 

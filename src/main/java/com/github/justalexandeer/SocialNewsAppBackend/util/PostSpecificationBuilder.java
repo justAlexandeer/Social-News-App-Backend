@@ -99,7 +99,7 @@ public class PostSpecificationBuilder {
     }
 
     private Specification<Post> equalIdCategory(String value) {
-        return (Specification<Post>) (root, query, cb) -> cb.equal(root.get("category_id"), Long.valueOf(value));
+        return (Specification<Post>) (root, query, cb) -> cb.equal(root.get("category").get("id"), Long.valueOf(value));
     }
 
     private Specification<Post> likeName(String value) {

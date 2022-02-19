@@ -3,6 +3,7 @@ package com.github.justalexandeer.SocialNewsAppBackend.filer;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,26 +43,41 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            FilterChain chain,
+            Authentication authResult
+    ) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
         Algorithm algorithm = Algorithm.HMAC256(Util.getSecretKey().getBytes());
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) //10 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
+                .withIssuer(httpServletRequest.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
         String refresh_token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 5 * 24 * 60 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
+                .withIssuer(httpServletRequest.getRequestURL().toString())
                 .sign(algorithm);
-        // response.setHeader("access_token", access_token);
-        // response.setHeader("refresh_token", refresh_token);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
-        response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        httpServletResponse.setContentType(APPLICATION_JSON_VALUE);
+        Response<Map<String, String>> response = new Response<>("success", null, tokens);
+        new ObjectMapper().writeValue(httpServletResponse.getOutputStream(), response);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            AuthenticationException failed
+    ) throws IOException, ServletException {
+        Response<Void> response = new Response<>("error", failed.getLocalizedMessage(), null);
+        httpServletResponse.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(httpServletResponse.getOutputStream(), response);
     }
 }

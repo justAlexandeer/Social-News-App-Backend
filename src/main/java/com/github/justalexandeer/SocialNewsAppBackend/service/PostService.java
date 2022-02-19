@@ -2,6 +2,7 @@ package com.github.justalexandeer.SocialNewsAppBackend.service;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
 import org.springframework.data.domain.Page;
@@ -22,12 +23,12 @@ public interface PostService {
 
     void createPost(String appUserName, String postName, String postContent, String categoryId, String tagsId);
 
-    Page<ResponseSimplePost> findAllPostBySearchCriteriaAndSort(
+    Response<Page<ResponseSimplePost>> findAllPostBySearchCriteriaAndSort(
             HashMap<String, String> mapParams,
             int pageNumber,
             int size,
             String sortBy
     );
 
-    ResponseFullPost getPost(String idPost);
+    Response<ResponseFullPost> getPost(String idPost);
 }

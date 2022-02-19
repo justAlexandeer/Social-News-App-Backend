@@ -5,6 +5,7 @@ import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Answer;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
 import com.github.justalexandeer.SocialNewsAppBackend.service.*;
@@ -91,7 +92,7 @@ public class PostController {
     }
 
     @GetMapping("/getPost")
-    public ResponseEntity<ResponseFullPost> getPost(
+    public ResponseEntity<Response<ResponseFullPost>> getPost(
             @RequestParam(value = "postId") String postId
     ) {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
@@ -103,7 +104,7 @@ public class PostController {
     }
 
     @GetMapping("/getPosts")
-    public ResponseEntity<Page<ResponseSimplePost>> getAllPostBySearchCriteriaAndSort(
+    public ResponseEntity<Response<Page<ResponseSimplePost>>> getAllPostBySearchCriteriaAndSort(
             @RequestParam(value = "afterPostDate", required = false) String afterPostDate,
             @RequestParam(value = "beforePostDate", required = false) String beforePostDate,
             @RequestParam(value = "nameAuthor", required = false) String nameAuthor,

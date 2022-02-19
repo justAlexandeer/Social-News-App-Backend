@@ -2,6 +2,7 @@ package com.github.justalexandeer.SocialNewsAppBackend.service;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.CategoryRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void createCategory(String categoryName) {
-        Category category = new Category(null, categoryName);
+        Category category = new Category(null, categoryName, false);
+        categoryRepository.save(category);
+    }
+
+    @Override
+    public void createDefaultCategory(String categoryName) {
+        Category category = new Category(null, categoryName, true);
         categoryRepository.save(category);
     }
 
@@ -46,6 +53,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Response<List<Category>> findAllDefaultCategories() {
+        return new Response<>("success", null, categoryRepository.findAllByIsDefaultTrue());
     }
 
     @Override

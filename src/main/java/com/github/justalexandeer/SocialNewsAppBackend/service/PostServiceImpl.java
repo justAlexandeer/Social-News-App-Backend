@@ -1,6 +1,7 @@
 package com.github.justalexandeer.SocialNewsAppBackend.service;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.*;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseAppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseFullPost;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseSimplePost;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -97,7 +99,7 @@ public class PostServiceImpl implements PostService {
         Category category = categoryService.getCategoryById(Long.valueOf(categoryId));
         List<String> listOfTagsId = new ArrayList(Arrays.asList(tagsId.split(",")));
         List<Tag> listOfTags = new ArrayList<>();
-        for(String tagId: listOfTagsId) {
+        for (String tagId : listOfTagsId) {
             Tag tag = tagRepository.getById(Long.valueOf(tagId));
             listOfTags.add(tag);
         }
@@ -114,32 +116,43 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<ResponseSimplePost> findAllPostBySearchCriteriaAndSort(
+    public Response<Page<ResponseSimplePost>> findAllPostBySearchCriteriaAndSort(
             HashMap<String, String> mapParams,
             int pageNumber,
             int size,
             String sortBy
     ) {
-        HashMap<PostSearchCriteria, String> mapCriteria = new HashMap<>();
-        mapParams.forEach((name, value) -> {
-            mapCriteria.put(PostSearchCriteria.fromParamStringToPostSearchCriteria(name), value);
-        });
-        PostSpecificationBuilder postSpecificationBuilder = new PostSpecificationBuilder();
-        mapCriteria.forEach(postSpecificationBuilder::with);
-        Sort sort = PostSortBy.fromPostSortByToSort(PostSortBy.fromParamStringToPostSortBy(sortBy));
-        Pageable pageable = PageRequest.of(pageNumber, size, sort);
+        try {
+            HashMap<PostSearchCriteria, String> mapCriteria = new HashMap<>();
+            mapParams.forEach((name, value) -> {
+                mapCriteria.put(PostSearchCriteria.fromParamStringToPostSearchCriteria(name), value);
+            });
+            PostSpecificationBuilder postSpecificationBuilder = new PostSpecificationBuilder();
+            mapCriteria.forEach(postSpecificationBuilder::with);
+            Sort sort = PostSortBy.fromPostSortByToSort(PostSortBy.fromParamStringToPostSortBy(sortBy));
+            Pageable pageable = PageRequest.of(pageNumber, size, sort);
 
-        Page<Post> page = postRepository.findAll(postSpecificationBuilder.build(), pageable);
+            Page<Post> page = postRepository.findAll(postSpecificationBuilder.build(), pageable);
 
-        return dataMapper.mapPagePostToPageSimplePost(page);
+            return new Response<>("success", null ,dataMapper.mapPagePostToPageSimplePost(page));
+        } catch (Exception exception) {
+            return new Response<>("error", exception.getLocalizedMessage(), null);
+        }
     }
 
     @Override
-    public ResponseFullPost getPost(String idPost) {
+    public Response<ResponseFullPost> getPost(String idPost) {
         Pageable pageable = PageRequest.of(0, 20);
-        Post post = postRepository.getById(Long.valueOf(idPost));
-        Page<Comment> pageOfComments = commentRepository.findAllByPost(post, pageable);
-
-        return dataMapper.mapToResponseFullPost(post, pageOfComments, answerRepository);
+        try {
+            Post post = postRepository.getById(Long.valueOf(idPost));
+            Page<Comment> pageOfComments = commentRepository.findAllByPost(post, pageable);
+            return new Response<>(
+                    "success",
+                    null,
+                    dataMapper.mapToResponseFullPost(post, pageOfComments, answerRepository)
+            );
+        } catch (EntityNotFoundException exception) {
+            return new Response<>("error", "noSuchPost", null);
+        }
     }
 }

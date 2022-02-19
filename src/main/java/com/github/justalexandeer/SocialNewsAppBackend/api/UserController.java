@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
 import com.github.justalexandeer.SocialNewsAppBackend.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -36,9 +38,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Исправить на обновление Access Token подходит и сам AccessToken
     @GetMapping("/token/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String refresh_token = request.getHeader(AUTHORIZATION);
+    public void refreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        //String refresh_token = httpServletRequest.getHeader(AUTHORIZATION);
+        String refresh_token = httpServletRequest.getParameter("refreshToken");
         if (refresh_token != null) {
             try {
                 Algorithm algorithm = Algorithm.HMAC256(Util.getSecretKey().getBytes());
@@ -48,31 +52,32 @@ public class UserController {
                 AppUser user = userService.getAppUser(userName);
                 String access_token = JWT.create()
                         .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-                        .withIssuer(request.getRequestURL().toString())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                        .withIssuer(httpServletRequest.getRequestURL().toString())
                         .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", access_token);
                 tokens.put("refresh_token", refresh_token);
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+                httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                Response<Map<String, String>> response = new Response<>("success", null, tokens);
+                new ObjectMapper().writeValue(httpServletResponse.getOutputStream(), response);
             } catch (Exception exception) {
-                response.setHeader("error", exception.getMessage());
-                response.setStatus(FORBIDDEN.value());
+                httpServletResponse.setHeader("error", exception.getMessage());
+                httpServletResponse.setStatus(UNAUTHORIZED.value());
                 Map<String, String> error = new HashMap<>();
                 error.put("error_message", exception.getMessage());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
+                httpServletResponse.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(httpServletResponse.getOutputStream(), error);
             }
         } else {
-            // Исправить на нормальный response
+            // Исправить на нормальный httpServletResponse
             throw new RuntimeException("Refresh token is missing");
         }
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registerAppUser(HttpServletRequest request) {
+    public ResponseEntity<Response<Void>> registerAppUser(HttpServletRequest request) {
         String username = request.getParameter("username");
         String name = request.getParameter("name");
         String password = request.getParameter("password");

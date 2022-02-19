@@ -1,30 +1,26 @@
 package com.github.justalexandeer.SocialNewsAppBackend.domain.response;
 
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
-
-import javax.persistence.*;
 import java.util.List;
 
 public class ResponseComment {
     private Long id;
     private String content;
     private Long postId;
-    private ResponseAppUser responseAppUser;
-    private List<ResponseAnswer> responseAnswerList;
+    private ResponseAppUser appUser;
+    private List<ResponseAnswer> answerList;
 
     public ResponseComment(
             Long id,
             String content,
             Long postId,
-            ResponseAppUser responseAppUser,
-            List<ResponseAnswer> responseAnswerList
+            ResponseAppUser appUser,
+            List<ResponseAnswer> answerList
     ) {
         this.id = id;
         this.content = content;
         this.postId = postId;
-        this.responseAppUser = responseAppUser;
-        this.responseAnswerList = responseAnswerList;
+        this.appUser = appUser;
+        this.answerList = answerList;
     }
 
     public Long getId() {
@@ -51,19 +47,19 @@ public class ResponseComment {
         this.postId = postId;
     }
 
-    public ResponseAppUser getResponseAppUser() {
-        return responseAppUser;
+    public ResponseAppUser getAppUser() {
+        return appUser;
     }
 
-    public void setResponseAppUser(ResponseAppUser responseAppUser) {
-        this.responseAppUser = responseAppUser;
+    public void setAppUser(ResponseAppUser appUser) {
+        this.appUser = appUser;
     }
 
-    public List<ResponseAnswer> getResponseAnswerList() {
-        return responseAnswerList;
+    public List<ResponseAnswer> getAnswerList() {
+        return answerList;
     }
 
-    public void setResponseAnswerList(List<ResponseAnswer> responseAnswerList) {
-        this.responseAnswerList = responseAnswerList;
+    public void setAnswerList(List<ResponseAnswer> answerList) {
+        this.answerList = answerList;
     }
 }

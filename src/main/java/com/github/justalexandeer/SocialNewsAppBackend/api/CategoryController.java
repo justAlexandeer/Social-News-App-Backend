@@ -1,7 +1,8 @@
 package com.github.justalexandeer.SocialNewsAppBackend.api;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
-import com.github.justalexandeer.SocialNewsAppBackend.service.CategoryServiceImpl;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
+import com.github.justalexandeer.SocialNewsAppBackend.service.CategoryService;
 import com.github.justalexandeer.SocialNewsAppBackend.util.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
-    private final CategoryServiceImpl categoryService;
+    private final CategoryService categoryService;
     private final PermissionManager permissionManager;
 
     @Autowired
-    public CategoryController(CategoryServiceImpl categoryService, PermissionManager permissionManager) {
+    public CategoryController(CategoryService categoryService, PermissionManager permissionManager) {
         this.categoryService = categoryService;
         this.permissionManager = permissionManager;
     }
@@ -33,6 +34,11 @@ public class CategoryController {
     public ResponseEntity<List<Category>> getCategories() {
         List<Category> listOfCategory = categoryService.findAllCategories();
         return new ResponseEntity<>(listOfCategory, HttpStatus.OK);
+    }
+
+    @GetMapping("/getDefaultCategories")
+    public ResponseEntity<Response<List<Category>>> getDefaultCategories() {
+        return new ResponseEntity<>(categoryService.findAllDefaultCategories(), HttpStatus.OK);
     }
 
     @GetMapping("/setCategoryToPost")

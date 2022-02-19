@@ -2,6 +2,7 @@ package com.github.justalexandeer.SocialNewsAppBackend.service;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.RoleRepository;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,16 +70,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String createAppUser(String userName, String name, String password) {
+    public Response<Void> createAppUser(String userName, String name, String password) {
         if(userRepository.existsByUsername(userName)) {
-            return "User with this name exist";
+            return new Response<>("error", "User with this username exist", null);
         } else {
             String encodedPassword = passwordEncoder.encode(password);
             Role role = roleRepository.findByName("ROLE_USER");
             AppUser appUser = new AppUser(name, userName, encodedPassword, new ArrayList<>());
             appUser.getRoles().add(role);
             userRepository.save(appUser);
-            return "User created";
+            return new Response<>("success", null, null);
         }
     }
 

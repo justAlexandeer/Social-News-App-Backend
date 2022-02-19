@@ -1,7 +1,6 @@
 package com.github.justalexandeer.SocialNewsAppBackend.domain.response;
 
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
 import org.springframework.data.domain.Page;
 
@@ -16,7 +15,7 @@ public class ResponseFullPost {
     private Category category;
     private Collection<Tag> tags = new ArrayList<>();
     private String content;
-    private Page<ResponseComment> comments;
+    private Page<ResponseComment> pageableComments;
 
     public ResponseFullPost(
             Long id,
@@ -26,7 +25,7 @@ public class ResponseFullPost {
             Category category,
             Collection<Tag> tags,
             String content,
-            Page<ResponseComment> comments
+            Page<ResponseComment> pageableComments
     ) {
         this.id = id;
         this.name = name;
@@ -35,7 +34,7 @@ public class ResponseFullPost {
         this.category = category;
         this.tags = tags;
         this.content = content;
-        this.comments = comments;
+        this.pageableComments = pageableComments;
     }
 
     public Long getId() {
@@ -94,11 +93,11 @@ public class ResponseFullPost {
         this.content = content;
     }
 
-    public Page<ResponseComment> getComments() {
-        return comments;
+    public Page<ResponseComment> getPageableComments() {
+        return pageableComments;
     }
 
-    public void setComments(Page<ResponseComment> comments) {
-        this.comments = comments;
+    public void setPageableComments(Page<ResponseComment> pageableComments) {
+        this.pageableComments = pageableComments;
     }
 }

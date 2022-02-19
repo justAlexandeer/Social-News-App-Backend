@@ -12,13 +12,16 @@ public class Category {
     private Long id;
     @Column(name = "name")
     private String name;
+    @Column(name = "is_default")
+    private Boolean isDefault;
 
     public Category() {
     }
 
-    public Category(Long id, String name) {
+    public Category(Long id, String name, Boolean isDefault) {
         this.id = id;
         this.name = name;
+        this.isDefault = isDefault;
     }
 
     public Long getId() {
@@ -35,5 +38,13 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 }
