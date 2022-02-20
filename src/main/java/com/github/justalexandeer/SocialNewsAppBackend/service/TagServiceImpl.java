@@ -36,6 +36,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<Tag> getTopTags(int limit) {
+        return new ArrayList<Tag>();
+    }
+
+    @Override
     public void setTagToPost(String postId, String tagId) {
         Post post = postRepository.getById(Long.valueOf(postId));
         Tag tag = tagRepository.getById(Long.valueOf(tagId));

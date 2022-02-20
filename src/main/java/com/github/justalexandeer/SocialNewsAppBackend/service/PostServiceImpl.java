@@ -95,6 +95,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void createPost(String appUserName, String postName, String postContent, String categoryId, String tagsId) {
+        // Исправить, что теги не обязательны
         AppUser appUser = userService.getAppUser(appUserName);
         Category category = categoryService.getCategoryById(Long.valueOf(categoryId));
         List<String> listOfTagsId = new ArrayList(Arrays.asList(tagsId.split(",")));
@@ -110,9 +111,18 @@ public class PostServiceImpl implements PostService {
                 appUser,
                 category,
                 listOfTags,
-                postContent
+                postContent,
+                0
         );
         postRepository.save(post);
+    }
+
+    @Override
+    public Response<List<ResponseSimplePost>> getTopPostsOfMonth(int limit) {
+        Long dateStart = System.currentTimeMillis() - 1000 * 60 * 5;
+        Pageable pageable = PageRequest.of(0, limit);
+        List<Post> listOfPosts = postRepository.findAllByDateAfterOrderByCommentCountDesc(dateStart, pageable);
+        return new Response<>("success", null, dataMapper.mapListPostToListSimplePost(listOfPosts));
     }
 
     @Override

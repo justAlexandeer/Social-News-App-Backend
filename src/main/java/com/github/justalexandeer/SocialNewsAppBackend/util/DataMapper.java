@@ -16,6 +16,25 @@ import java.util.List;
 @Component("dataMapper")
 public class DataMapper {
 
+    public List<ResponseSimplePost> mapListPostToListSimplePost(List<Post> listOfPost) {
+        List<ResponseSimplePost> listOfResponseSimplePost = new ArrayList<>();
+        for(Post post: listOfPost) {
+            listOfResponseSimplePost.add(
+                    new ResponseSimplePost(
+                            post.getId(),
+                            post.getName(),
+                            post.getDate(),
+                            new ResponseAppUser(post.getAppUser().getName(), post.getAppUser().getUsername()),
+                            post.getCategory(),
+                            post.getTags(),
+                            post.getContent(),
+                            post.getCommentCount()
+                    )
+            );
+        }
+        return listOfResponseSimplePost;
+    }
+
     public Page<ResponseSimplePost> mapPagePostToPageSimplePost(Page<Post> page) {
         return page.map(post -> {
             ResponseAppUser responseAppUser = new ResponseAppUser(
@@ -29,7 +48,8 @@ public class DataMapper {
                     responseAppUser,
                     post.getCategory(),
                     post.getTags(),
-                    post.getContent()
+                    post.getContent(),
+                    post.getCommentCount()
             );
             return responseSimplePost;
         });
@@ -49,7 +69,8 @@ public class DataMapper {
                 post.getCategory(),
                 post.getTags(),
                 post.getContent(),
-                pageOfResponseComment
+                pageOfResponseComment,
+                post.getCommentCount()
         );
     }
 

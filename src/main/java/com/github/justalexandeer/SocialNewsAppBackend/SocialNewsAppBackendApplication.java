@@ -70,7 +70,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 						appUser1,
 						listDefaultCategory.get(0),
 						null,
-						"content null content content content content content content content content content content"
+						"content null content content content content content content content content content content",
+						0
 				));
 			}
 
@@ -82,7 +83,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 						appUser1,
 						listDefaultCategory.get(1),
 						null,
-						"content null content content content content content content content content content content"
+						"content null content content content content content content content content content content",
+						0
 				));
 			}
 
@@ -94,7 +96,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 						appUser1,
 						listDefaultCategory.get(2),
 						null,
-						"content null content content content content content content content content content content"
+						"content null content content content content content content content content content content",
+						0
 				));
 			}
 
@@ -106,7 +109,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 						appUser1,
 						listDefaultCategory.get(3),
 						null,
-						"content null content content content content content content content content content content"
+						"content null content content content content content content content content content content",
+						0
 				));
 			}
 
@@ -118,7 +122,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 						appUser1,
 						listDefaultCategory.get(4),
 						null,
-						"content null content content content content content content content content content content"
+						"content null content content content content content content content content content content",
+						0
 				));
 			}
 
@@ -130,7 +135,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 						appUser1,
 						null,
 						null,
-						"content null content content content content content content content content content content"
+						"content null content content content content content content content content content content",
+						0
 				));
 			}
 

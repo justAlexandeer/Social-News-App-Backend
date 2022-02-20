@@ -19,4 +19,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     Page<Post> findAllPosts(Pageable pageable);
     List<Post> findAllByCategoryId(Long categoryId);
     List<Post> findAllByTagsIn(Collection<Tag> tagsId);
+    List<Post> findAllByDateAfterOrderByCommentCountDesc(Long date, Pageable pageable);
 }

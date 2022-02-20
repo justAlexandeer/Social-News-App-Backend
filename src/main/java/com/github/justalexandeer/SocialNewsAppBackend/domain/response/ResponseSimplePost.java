@@ -19,6 +19,7 @@ public class ResponseSimplePost {
     private Category category;
     private Collection<Tag> tags = new ArrayList<>();
     private String content;
+    private int commentCount;
 
     public ResponseSimplePost(
             Long id,
@@ -27,7 +28,8 @@ public class ResponseSimplePost {
             ResponseAppUser appUser,
             Category category,
             Collection<Tag> tags,
-            String content
+            String content,
+            int commentCount
     ) {
         this.id = id;
         this.name = name;
@@ -36,6 +38,7 @@ public class ResponseSimplePost {
         this.category = category;
         this.tags = tags;
         this.content = content;
+        this.commentCount = commentCount;
     }
 
     public Long getId() {
@@ -92,5 +95,13 @@ public class ResponseSimplePost {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

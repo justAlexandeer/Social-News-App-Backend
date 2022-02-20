@@ -23,6 +23,8 @@ public interface PostService {
 
     void createPost(String appUserName, String postName, String postContent, String categoryId, String tagsId);
 
+    Response<List<ResponseSimplePost>> getTopPostsOfMonth(int limit);
+
     Response<Page<ResponseSimplePost>> findAllPostBySearchCriteriaAndSort(
             HashMap<String, String> mapParams,
             int pageNumber,

@@ -3,6 +3,7 @@ package com.github.justalexandeer.SocialNewsAppBackend.api;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
 import com.github.justalexandeer.SocialNewsAppBackend.service.TagService;
 import com.github.justalexandeer.SocialNewsAppBackend.util.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,13 @@ public class TagController {
         return new ResponseEntity<>(listOfTags, HttpStatus.OK);
     }
 
+//    @GetMapping("getTopTags")
+//    public ResponseEntity<Response<List<Tag>>> getTopTags(
+//            @RequestParam int limit
+//    ) {
+//        List<Tag> listOfTopTags =
+//    }
+
     @GetMapping("/setTagToPost")
     public ResponseEntity<String> setTagToPost(
             HttpServletRequest request,
@@ -46,7 +54,7 @@ public class TagController {
             @RequestParam String tagId
     ) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(permissionManager.havePermissionToChangePost(authorizationHeader, postId)) {
+        if (permissionManager.havePermissionToChangePost(authorizationHeader, postId)) {
             tagService.setTagToPost(postId, tagId);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -61,7 +69,7 @@ public class TagController {
             @RequestParam String tagsId
     ) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(permissionManager.havePermissionToChangePost(authorizationHeader, postId)) {
+        if (permissionManager.havePermissionToChangePost(authorizationHeader, postId)) {
             tagService.setTagsToPost(postId, tagsId);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

@@ -16,6 +16,7 @@ public class ResponseFullPost {
     private Collection<Tag> tags = new ArrayList<>();
     private String content;
     private Page<ResponseComment> pageableComments;
+    private int commentCount;
 
     public ResponseFullPost(
             Long id,
@@ -25,7 +26,8 @@ public class ResponseFullPost {
             Category category,
             Collection<Tag> tags,
             String content,
-            Page<ResponseComment> pageableComments
+            Page<ResponseComment> pageableComments,
+            int commentCount
     ) {
         this.id = id;
         this.name = name;
@@ -35,6 +37,7 @@ public class ResponseFullPost {
         this.tags = tags;
         this.content = content;
         this.pageableComments = pageableComments;
+        this.commentCount = commentCount;
     }
 
     public Long getId() {
@@ -99,5 +102,13 @@ public class ResponseFullPost {
 
     public void setPageableComments(Page<ResponseComment> pageableComments) {
         this.pageableComments = pageableComments;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

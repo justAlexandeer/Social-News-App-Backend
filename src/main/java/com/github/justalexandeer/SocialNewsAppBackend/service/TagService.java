@@ -10,6 +10,7 @@ import java.util.List;
 public interface TagService {
     void saveTag(Tag tag);
     List<Tag> findAllTags();
+    List<Tag> getTopTags(int limit);
     void setTagToPost(String postId, String tagId);
     void setTagsToPost(String postId, String tagsId);
     void createTag(String tagName);

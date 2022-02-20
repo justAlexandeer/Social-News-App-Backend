@@ -54,6 +54,7 @@ public class CommentServiceImpl implements CommentService {
     public void createComment(String appUserName, String commentContent, String postId) {
         AppUser appUser = userRepository.findByUsername(appUserName);
         Post post = postRepository.getById(Long.valueOf(postId));
+        post.setCommentCount(post.getCommentCount() + 1);
         Comment comment = new Comment(null, commentContent, post, appUser);
         commentRepository.save(comment);
     }
@@ -67,6 +68,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(String commentId) {
         Comment comment = commentRepository.getById(Long.valueOf(commentId));
+        Post post = comment.getPost();
+        post.setCommentCount(post.getCommentCount() - 1);
         answerRepository.deleteAllByComment(comment);
         commentRepository.delete(comment);
     }

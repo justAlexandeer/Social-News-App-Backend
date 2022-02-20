@@ -98,6 +98,13 @@ public class PostController {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
+    @GetMapping("/getTopPostsOfMonth")
+    public ResponseEntity<Response<List<ResponseSimplePost>>> getTopPostsOfMonth(
+            @RequestParam int limit
+    ) {
+        return new ResponseEntity<>(postService.getTopPostsOfMonth(limit), HttpStatus.OK);
+    }
+
     @GetMapping("/getAllPost")
     public ResponseEntity<List<Post>> getAllPosts() {
         return new ResponseEntity<>(postService.getAllPosts(), HttpStatus.OK);

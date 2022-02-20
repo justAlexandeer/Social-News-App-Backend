@@ -28,6 +28,7 @@ public class Post {
     private Collection<Tag> tags = new ArrayList<>();
     @Column(name = "content")
     private String content;
+    private int commentCount;
 
     public Post() {
 
@@ -40,7 +41,8 @@ public class Post {
             AppUser appUser,
             Category category,
             Collection<Tag> tags,
-            String content
+            String content,
+            int commentCount
     ) {
         this.id = id;
         this.name = name;
@@ -49,6 +51,7 @@ public class Post {
         this.category = category;
         this.tags = tags;
         this.content = content;
+        this.commentCount = commentCount;
     }
 
     public Long getId() {
@@ -107,4 +110,11 @@ public class Post {
         this.content = content;
     }
 
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
 }
