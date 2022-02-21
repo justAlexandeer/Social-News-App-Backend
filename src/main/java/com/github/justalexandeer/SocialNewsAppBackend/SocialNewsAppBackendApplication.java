@@ -49,8 +49,8 @@ public class SocialNewsAppBackendApplication extends SpringBootServletInitialize
 			userService.addRoleToUser("john", "ROLE_USER");
 			userService.addRoleToUser("sergey", "ROLE_ADMIN");
 
-			tagService.saveTag(new Tag(100L, "first Tag"));
-			tagService.saveTag(new Tag(101L, "Second Tag"));
+			tagService.saveTag(new Tag(1L, "first Tag", 0));
+			tagService.saveTag(new Tag(1L, "Second Tag", 0));
 
 			categoryService.createDefaultCategory("Politics");
 			categoryService.createDefaultCategory("Sport");

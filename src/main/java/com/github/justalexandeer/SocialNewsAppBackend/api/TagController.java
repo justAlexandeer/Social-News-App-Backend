@@ -4,9 +4,12 @@ import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Category;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Tag;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseTag;
 import com.github.justalexandeer.SocialNewsAppBackend.service.TagService;
 import com.github.justalexandeer.SocialNewsAppBackend.util.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +43,12 @@ public class TagController {
         return new ResponseEntity<>(listOfTags, HttpStatus.OK);
     }
 
-//    @GetMapping("getTopTags")
-//    public ResponseEntity<Response<List<Tag>>> getTopTags(
-//            @RequestParam int limit
-//    ) {
-//        List<Tag> listOfTopTags =
-//    }
+    @GetMapping("/getTopTags")
+    public ResponseEntity<Response<List<ResponseTag>>> getTopTags(
+            @RequestParam int limit
+    ) {
+        return new ResponseEntity<>(tagService.getTopTags(limit), HttpStatus.OK);
+    }
 
     @GetMapping("/setTagToPost")
     public ResponseEntity<String> setTagToPost(

@@ -1,9 +1,6 @@
 package com.github.justalexandeer.SocialNewsAppBackend.util;
 
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Answer;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Comment;
-import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Post;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.*;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.*;
 import com.github.justalexandeer.SocialNewsAppBackend.repository.AnswerRepository;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component("dataMapper")
@@ -26,7 +24,7 @@ public class DataMapper {
                             post.getDate(),
                             new ResponseAppUser(post.getAppUser().getName(), post.getAppUser().getUsername()),
                             post.getCategory(),
-                            post.getTags(),
+                            mapListTagToListResponseTag(post.getTags()),
                             post.getContent(),
                             post.getCommentCount()
                     )
@@ -47,7 +45,7 @@ public class DataMapper {
                     post.getDate(),
                     responseAppUser,
                     post.getCategory(),
-                    post.getTags(),
+                    mapListTagToListResponseTag(post.getTags()),
                     post.getContent(),
                     post.getCommentCount()
             );
@@ -104,5 +102,13 @@ public class DataMapper {
                 appUser.getName(),
                 appUser.getUsername()
         );
+    }
+
+    public List<ResponseTag> mapListTagToListResponseTag(Collection<Tag> listTags) {
+        List<ResponseTag> listOfResponseTag = new ArrayList<ResponseTag>();
+        for(Tag tag: listTags) {
+            listOfResponseTag.add(new ResponseTag(tag.getId(), tag.getName(), tag.getAmountOfUse()));
+        }
+        return listOfResponseTag;
     }
 }

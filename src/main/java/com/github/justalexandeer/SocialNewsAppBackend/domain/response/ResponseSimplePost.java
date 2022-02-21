@@ -17,7 +17,7 @@ public class ResponseSimplePost {
     private Long date;
     private ResponseAppUser appUser;
     private Category category;
-    private Collection<Tag> tags = new ArrayList<>();
+    private Collection<ResponseTag> tags = new ArrayList<>();
     private String content;
     private int commentCount;
 
@@ -27,7 +27,7 @@ public class ResponseSimplePost {
             Long date,
             ResponseAppUser appUser,
             Category category,
-            Collection<Tag> tags,
+            Collection<ResponseTag> tags,
             String content,
             int commentCount
     ) {
@@ -81,11 +81,11 @@ public class ResponseSimplePost {
         this.category = category;
     }
 
-    public Collection<Tag> getTags() {
+    public Collection<ResponseTag> getTags() {
         return tags;
     }
 
-    public void setTags(Collection<Tag> tags) {
+    public void setTags(Collection<ResponseTag> tags) {
         this.tags = tags;
     }
 

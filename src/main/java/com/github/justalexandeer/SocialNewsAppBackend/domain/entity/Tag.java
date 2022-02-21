@@ -15,15 +15,18 @@ public class Tag {
     private Long id;
     @Column(name = "name")
     private String name;
-    
-
+    @ManyToMany(mappedBy = "tags")
+    @Column(name = "posts")
+    private Collection<Post> posts = new ArrayList<>();
+    @Column(name = "amount_of_use")
+    private int amountOfUse;
     public Tag() {
-
     }
 
-    public Tag(Long id, String name) {
+    public Tag(Long id, String name, int amountOfUse) {
         this.id = id;
         this.name = name;
+        this.amountOfUse = amountOfUse;
     }
 
     public Long getId() {
@@ -40,5 +43,21 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Collection<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Collection<Post> posts) {
+        this.posts = posts;
+    }
+
+    public int getAmountOfUse() {
+        return amountOfUse;
+    }
+
+    public void setAmountOfUse(int amountOfUse) {
+        this.amountOfUse = amountOfUse;
     }
 }
