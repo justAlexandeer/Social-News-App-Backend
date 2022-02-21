@@ -16,13 +16,17 @@ public class DataMapper {
 
     public List<ResponseSimplePost> mapListPostToListSimplePost(List<Post> listOfPost) {
         List<ResponseSimplePost> listOfResponseSimplePost = new ArrayList<>();
-        for(Post post: listOfPost) {
+        for (Post post : listOfPost) {
             listOfResponseSimplePost.add(
                     new ResponseSimplePost(
                             post.getId(),
                             post.getName(),
                             post.getDate(),
-                            new ResponseAppUser(post.getAppUser().getName(), post.getAppUser().getUsername()),
+                            new ResponseAppUser(
+                                    post.getAppUser().getName(),
+                                    post.getAppUser().getUsername(),
+                                    post.getAppUser().getPosts().size()
+                            ),
                             post.getCategory(),
                             mapListTagToListResponseTag(post.getTags()),
                             post.getContent(),
@@ -37,7 +41,8 @@ public class DataMapper {
         return page.map(post -> {
             ResponseAppUser responseAppUser = new ResponseAppUser(
                     post.getAppUser().getName(),
-                    post.getAppUser().getUsername()
+                    post.getAppUser().getUsername(),
+                    post.getAppUser().getPosts().size()
             );
             ResponseSimplePost responseSimplePost = new ResponseSimplePost(
                     post.getId(),
@@ -72,7 +77,7 @@ public class DataMapper {
         );
     }
 
-    public Page<ResponseComment> mapFromPageCommentToPageResponseComment (
+    public Page<ResponseComment> mapFromPageCommentToPageResponseComment(
             Page<Comment> pageOfComment,
             AnswerRepository answerRepository
     ) {
@@ -100,15 +105,24 @@ public class DataMapper {
     private ResponseAppUser mapAppUserToResponseAppUser(AppUser appUser) {
         return new ResponseAppUser(
                 appUser.getName(),
-                appUser.getUsername()
+                appUser.getUsername(),
+                appUser.getPosts().size()
         );
     }
 
     public List<ResponseTag> mapListTagToListResponseTag(Collection<Tag> listTags) {
         List<ResponseTag> listOfResponseTag = new ArrayList<ResponseTag>();
-        for(Tag tag: listTags) {
+        for (Tag tag : listTags) {
             listOfResponseTag.add(new ResponseTag(tag.getId(), tag.getName(), tag.getAmountOfUse()));
         }
         return listOfResponseTag;
+    }
+
+    public List<ResponseAppUser> mapListAppUserToListResponseAppUser(Collection<AppUser> listAppUser) {
+        List<ResponseAppUser> listOfResponseAppUser = new ArrayList<>();
+        for(AppUser appUser: listAppUser) {
+            listOfResponseAppUser.add(new ResponseAppUser(appUser.getName(), appUser.getUsername(), appUser.getPosts().size()));
+        }
+        return listOfResponseAppUser;
     }
 }

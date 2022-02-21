@@ -8,7 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    //@Query("select t from Tag t order by t.posts.size DESC")
-
     List<Tag> findAllByOrderByAmountOfUseDesc(Pageable pageable);
 }

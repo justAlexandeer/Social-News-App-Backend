@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.AppUser;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.entity.Role;
 import com.github.justalexandeer.SocialNewsAppBackend.domain.response.Response;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseAppUser;
+import com.github.justalexandeer.SocialNewsAppBackend.domain.response.ResponseTag;
 import com.github.justalexandeer.SocialNewsAppBackend.service.UserService;
 import com.github.justalexandeer.SocialNewsAppBackend.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +87,12 @@ public class UserController {
         return new ResponseEntity<>(userService.createAppUser(username, name, password), HttpStatus.OK);
     }
 
+    @GetMapping("/getTopAuthors")
+    public ResponseEntity<Response<List<ResponseAppUser>>> getTopTags(
+            @RequestParam int limit
+    ) {
+        return new ResponseEntity<>(userService.getTopAuthors(limit), HttpStatus.OK);
+    }
 
     @GetMapping("/users")
     public ResponseEntity<List<AppUser>> getAppUsers() {

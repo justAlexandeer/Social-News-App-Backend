@@ -1,5 +1,7 @@
 package com.github.justalexandeer.SocialNewsAppBackend.domain.entity;
 
+import javafx.geometry.Pos;
+
 import javax.persistence.*;
 
 import java.util.ArrayList;
@@ -20,7 +22,9 @@ public class AppUser {
     @ManyToMany()
     @Column(name = "roles")
     private Collection<Role> roles = new ArrayList<>();
-
+    @OneToMany(mappedBy = "appUser")
+    @Column(name = "posts")
+    private Collection<Post> posts = new ArrayList<>();
     public AppUser() {
 
     }
@@ -62,6 +66,14 @@ public class AppUser {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public Collection<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Collection<Post> posts) {
+        this.posts = posts;
     }
 
 }
